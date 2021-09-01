@@ -22,7 +22,7 @@
 			<q-item
 				v-for="(task, index) in tasks"
 				:key="task.title"
-				@click="task.done = !task.done"
+				@click="toogleState(index)"
 				v-ripple
 				clickable
 				:class="{ 'done bg-blue-1': task.done }"
@@ -57,8 +57,9 @@
 </template>
 
 <script>
-	import { defineComponent, ref } from "vue";
+	import { defineComponent, ref, computed } from 'vue';
 	import { useQuasar } from "quasar";
+	import { useStore } from "vuex";
 
 	export default defineComponent({
 		name: "Todo",
@@ -67,12 +68,11 @@
 			const $q = useQuasar();
 
 			const newTask = ref("");
-			const tasks = ref([]);
 			const txtInput = ref(null);
+			const store = useStore();
 
 			return {
 				txtInput,
-				tasks,
 				newTask,
 				deleteTask: (index) => {
 					$q.dialog({
@@ -81,7 +81,8 @@
 						cancel: true,
 						persistent: true,
 					}).onOk(() => {
-						tasks.value.splice(index, 1);
+						store.commit('todo/removeTodo', index);
+
 						$q.notify({
 							icon: "warning",
 							color: "red",
@@ -90,24 +91,31 @@
 					});
 				},
 				addTask: () => {
-
 					txtInput.value.validate();
 					if(txtInput.value.hasError){
-						return $q.notify({
+						$q.notify({
 							icon: 'error',
 							message: 'Verifique los datos ingresados',
 							color: 'warning'
 						})
+						return;
 					}
 					
-					txtInput.value.resetValidation();
-					tasks.value.push({
+					store.commit('todo/addTodo', {
 						title: newTask.value,
 						done: false,
 					});
+
 					newTask.value = "";
-					
 				},
+				tasks: computed(() => store.getters['todo/all']),
+				toogleState: (index) => {
+					txtInput.value.resetValidation();
+					store.commit('todo/toogle', index)
+				},
+				reset: () => {
+					txtInput.value.resetValidation();
+				}
 			};
 		},
 	});

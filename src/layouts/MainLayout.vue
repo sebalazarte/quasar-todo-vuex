@@ -99,7 +99,7 @@
             <q-fab
               icon="language"
               direction="up"
-              color="warning"
+              color="primary"
             >
               <q-fab-action
 			  	icon="translate"
