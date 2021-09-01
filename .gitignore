@@ -19,6 +19,8 @@ node_modules
 # BEX related directories and files
 /src-bex/www
 /src-bex/js/core
+/src-electron
+/src-cordova
 
 # Log files
 npm-debug.log*
