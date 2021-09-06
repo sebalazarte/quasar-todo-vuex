@@ -1,22 +1,13 @@
 import { store } from 'quasar/wrappers'
 import { createStore } from 'vuex'
 import todo from './todo'
-
-// import example from './module-example'
-
-/*
- * If not building with SSR mode, you can
- * directly export the Store instantiation;
- *
- * The function below can be async too; either use
- * async/await or return a Promise which resolves
- * with the Store instance.
- */
+import auth from './auth'
 
 export default store(function (/* { ssrContext } */) {
   const Store = createStore({
     modules: {
-      todo
+      todo,
+      auth
     },
 
     // enable strict mode (adds overhead!)
