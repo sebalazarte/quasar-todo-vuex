@@ -1,7 +1,7 @@
 <template>
 	<q-layout view="lHh Lpr lFf">
 		<q-header>
-			<q-toolbar>
+			<q-toolbar class="row justify-between">
 				<q-btn
 					flat
 					dense
@@ -9,6 +9,13 @@
 					icon="menu"
 					aria-label="Menu"
 					@click="toggleLeftDrawer"
+				/>
+				<q-btn 
+					round
+					icon="logout"
+					dense
+					color="negative"
+					@click="logout"
 				/>
 			</q-toolbar>
 
@@ -85,8 +92,8 @@
 					<q-avatar size="56px" class="q-mb-sm">
 						<img src="../statics/seba.jpg" />
 					</q-avatar>
-					<div class="text-weight-bold">Seba Lazarte</div>
-					<div>@sebalazarte</div>
+					<div class="text-weight-bold">{{username}}</div>
+					<div>{{userEmail}}</div>
 				</div>
 			</q-img>
 		</q-drawer>
@@ -121,6 +128,8 @@
 	import { useI18n } from 'vue-i18n'
 	import { defineComponent, ref, computed } from "vue";
 	import { date } from "quasar";
+	import {useStore} from 'vuex';
+	import {useRouter} from 'vue-router';
 
 	export default defineComponent({
 		name: "MainLayout",
@@ -129,11 +138,14 @@
 		},
 
 		setup() {
+			const $store = useStore();
 			const leftDrawerOpen = ref(false);
 		    const { locale } = useI18n({ useScope: 'global' })
-
+			const router = useRouter();
 
 			return {
+				username: computed(() => $store.getters['auth/username']),
+				userEmail: computed(() => $store.getters['auth/userEmail']),
 				leftDrawerOpen,
 				toggleLeftDrawer() {
 					leftDrawerOpen.value = !leftDrawerOpen.value;
@@ -149,6 +161,10 @@
 				],
 				setLanguage: (lan) => {
 					locale.value = lan
+				},
+				logout: () => {
+					$store.commit('auth/logout');
+					router.push({name: 'login'});
 				}
 			};
 		},
